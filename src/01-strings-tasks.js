@@ -229,25 +229,14 @@ function getRectangleString(width, height) {
  *
  */
 function encodeToRot13(str) {
-  const firstLetter = 'abcdefghijklm';
-  const firstUpperLetter = firstLetter.toUpperCase();
-  const secondLetter = 'nopqrstuvwxyz';
-  const secondUpperLetter = secondLetter.toUpperCase();
-  let rot13Str = '';
-  for (let i = 0; i < str.length; i += 1) {
-    if (str[i] <= 'n' && str[i] >= 'a') {
-      rot13Str += secondLetter[firstLetter.indexOf(str[i])];
-    } else if (str[i] >= 'm' && str[i] <= 'z') {
-      rot13Str += firstLetter[secondLetter.indexOf(str[i])];
-    } else if (str[i] <= 'N' && str[i] >= 'A') {
-      rot13Str += secondUpperLetter[firstUpperLetter.indexOf(str[i])];
-    } else if (str[i] >= 'M' && str[i] <= 'Z') {
-      rot13Str += firstUpperLetter[secondUpperLetter.indexOf(str[i])];
-    } else {
-      rot13Str += str[i];
+  return [...str].reduce((acc, el) => {
+    const code = el.toUpperCase().charCodeAt(0);
+    let dif = 0;
+    if (code >= 65 && code <= 90) {
+      dif = code < 78 ? 13 : -13;
     }
-  }
-  return rot13Str;
+    return acc + String.fromCharCode(el.charCodeAt(0) + dif);
+  }, '');
 }
 
 /**
@@ -295,9 +284,15 @@ function isString(value) {
  *   'K♠' => 51
  */
 function getCardId(value) {
-  const cardSuit = '♣♦♥♠';
-  const denomination = 'A234567891JQK';
-  return cardSuit.indexOf(value[1]) * 13 + denomination.indexOf(value[0]);
+  const orderValue = {
+    A: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7, 9: 8, 1: 9, J: 10, Q: 11, K: 12,
+  };
+  const suitValue = {
+    9827: 0, 9830: 1, 9829: 2, 9824: 3,
+  };
+  const orderSymbol = value.charAt(0);
+  const suitCode = value.codePointAt(value.length - 1);
+  return suitValue[suitCode] * 13 + orderValue[orderSymbol];
 }
 
 module.exports = {
