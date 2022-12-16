@@ -50,7 +50,12 @@ function getCircleCircumference(radius) {
  *  -3, 3  => 0
  */
 function getAverage(value1, value2) {
-  return (value1 + value2) / 2;
+  if (Number.isFinite(value1) && Number.isFinite(value2)) {
+    const max = Math.max(value1, value2);
+    const min = Math.min(value1, value2);
+    return min / 2 + max / 2;
+  }
+  return Infinity;
 }
 
 /**
@@ -107,7 +112,8 @@ function getLinearEquationRoot(a, b) {
  *   (0,1) (1,2)     => 0
  */
 function getAngleBetweenVectors(x1, y1, x2, y2) {
-  return Math.atan2(y2 - y1, x2 - x1);
+  const cos = (x1 * x2 + y1 * y2) / Math.sqrt(x1 ** 2 + y1 ** 2) / Math.sqrt(x2 ** 2 + y2 ** 2);
+  return Math.acos(cos);
 }
 
 /**
